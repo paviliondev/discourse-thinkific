@@ -14,7 +14,7 @@ after_initialize do
 
   add_to_serializer(:current_user, :thinkific_redirect_url, false) do
     if object.present?
-      SessionControllerExtension.generate_thinkific_url(object)
+      SessionController.generate_thinkific_url(object)
     end
   end
 
