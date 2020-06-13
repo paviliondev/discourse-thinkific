@@ -19,7 +19,7 @@ after_initialize do
   end
 
   module SessionControllerExtension
-    def self.generate_thinkific_url(user)
+    def generate_thinkific_url(user)
       base_url = SiteSetting.thinkific_base_url
       return "" if(!self.valid_url?(base_url) || SiteSetting.thinkific_jwt_auth_token.empty?)
 
@@ -41,11 +41,11 @@ after_initialize do
     end
 
     def login(user)
-      cookies[:thinkific_redirect] = self.generate_thinkific_url(user)
+      cookies[:thinkific_redirect] = self.class.generate_thinkific_url(user)
       super
     end
 
-    def self.valid_url?(url)
+    def valid_url?(url)
       uri = URI.parse(url)
       uri.is_a?(URI::HTTP) && !uri.host.nil?
     rescue URI::InvalidURIError
@@ -53,6 +53,6 @@ after_initialize do
     end
   end
 
-  ::SessionController.prepend SessionControllerExtension if SiteSetting.discourse_thinkific_enabled
+  ::SessionController.singleton_class.prepend SessionControllerExtension if SiteSetting.discourse_thinkific_enabled
 
 end
